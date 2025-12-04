@@ -1,4 +1,5 @@
 
+using ECommerce.Configurations;
 using ECommerceAPI;
 using ECommerceAPI.Utilities;
 using Scalar.AspNetCore;
@@ -29,9 +30,16 @@ namespace ECommece_API
             builder.Services.RegisterMapsterConfig();
             // Configure Stripe settings
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
-            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"]; 
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
             var app = builder.Build();
+
+            //Data Seeding
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            //    dbInitializer.Initialize();
+            //}
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
