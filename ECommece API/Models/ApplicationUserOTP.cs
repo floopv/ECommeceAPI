@@ -8,6 +8,7 @@
         public DateTime ExpireAt{ get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsValid { get; set; }
+        public bool CanResetPassword { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public ApplicationUserOTP()
         {

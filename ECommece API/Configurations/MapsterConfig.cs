@@ -1,14 +1,14 @@
-﻿//using ECommerceAPI.DTOs;
+﻿using ECommece_API.DTOs.Response;
+using Mapster;
 
-
-namespace ECommerce.Configurations
+namespace ECommece_API.Configurations
 {
     public static class MapsterConfig
     {
         public static void RegisterMapsterConfig(this IServiceCollection services)
         {
-            //TypeAdapterConfig<ApplicationUser, ApplicationUserVM>.NewConfig().
-            //    Map(dest=> dest.FullName , src=> $"{src.FirstName} {src.LastName}");
+            TypeAdapterConfig<ApplicationUser, ApplicationUserResponse>.NewConfig().
+                Map(dest => dest.FullName, src => $"{src.FirstName} {src.LastName}");
         }
     }
 }
