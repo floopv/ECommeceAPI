@@ -40,7 +40,7 @@ namespace ECommece_API.Areas.Identity.Controllers
             var userVM = user.Adapt<ApplicationUserResponse>();
             return Ok(userVM);
         }
-        [HttpPost("UpdateProfile")]
+        [HttpPut("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile(ApplicationUserRequest applicationUserRequest)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -88,7 +88,7 @@ namespace ECommece_API.Areas.Identity.Controllers
                 });
             }
         }
-        [HttpPost("UpdatePassword")]
+        [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(ApplicationUserRequest applicationUserRequest)
         {
             if (string.IsNullOrEmpty(applicationUserRequest.CurrentPassword) || string.IsNullOrEmpty(applicationUserRequest.NewPassword))
