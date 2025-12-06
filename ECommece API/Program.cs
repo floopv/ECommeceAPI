@@ -1,5 +1,5 @@
 
-using ECommerce.Configurations;
+using ECommece_API.Configurations;
 using ECommerceAPI;
 using ECommerceAPI.Utilities;
 using Scalar.AspNetCore;
