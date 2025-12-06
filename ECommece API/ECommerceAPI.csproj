@@ -21,4 +21,10 @@
 	  <PackageReference Include="Stripe.net" Version="50.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\BrandImages\" />
+    <Folder Include="wwwroot\ProductSubImgs\" />
+    <Folder Include="wwwroot\ProductImages\" />
+  </ItemGroup>
+
 </Project>
