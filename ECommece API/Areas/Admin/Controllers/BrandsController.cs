@@ -12,7 +12,7 @@ namespace ECommece_API.Areas.Admin.Controllers
     [Route("[Area]/[controller]")]
     [ApiController]
     [Area("Admin")]
-    [Authorize(Roles = $"{ConstantData.Super_Admin_Role} , {ConstantData.Admin_Role} , {ConstantData.Employee_Role}")]
+    [Authorize(Roles = $"{ConstantData.Super_Admin_Role} ,{ConstantData.Admin_Role} , {ConstantData.Employee_Role}")]
 
     public class BrandsController : ControllerBase
     {

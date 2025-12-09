@@ -1,10 +1,12 @@
 ﻿using ECommece_API.DTOs.Request;
 using ECommece_API.DTOs.Response;
+using ECommece_API.JwtFeatures;
 using ECommerceAPI.Repos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ECommece_API.Areas.Identity.Controllers
 {
@@ -17,13 +19,15 @@ namespace ECommece_API.Areas.Identity.Controllers
         private readonly IEmailSender _emailSender;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IRepository<ApplicationUserOTP> _applicationUserOTPRepository;
+        private readonly IJwtHandler _jwtHandler;
 
-        public AccountController(UserManager<ApplicationUser> userManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager, IRepository<ApplicationUserOTP> applicationUserOTPRepository)
+        public AccountController(UserManager<ApplicationUser> userManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager, IRepository<ApplicationUserOTP> applicationUserOTPRepository, IJwtHandler jwtHandler)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
             _applicationUserOTPRepository = applicationUserOTPRepository;
+            _jwtHandler = jwtHandler;
         }
 
         [HttpPost("Register")]
@@ -397,9 +401,14 @@ namespace ECommece_API.Areas.Identity.Controllers
                     var signInResult = await _signInManager.PasswordSignInAsync(user, loginRequest.Password, loginRequest.RememberMe, true);
                     if (signInResult.Succeeded)
                     {
-                        return Ok(new ReturnModelResponse { 
-                            ReturnCode = 200 ,
-                            ReturnMessage = "Login Successful"
+                        var token = await _jwtHandler.GenerateAccessTokenAsync(user);
+                        var refreshToken = _jwtHandler.GenerateRefreshToken();
+                        user.RefreshToken = refreshToken;
+                        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+                        await _userManager.UpdateAsync(user);
+                        return Ok(new AuthenticatedResponse { 
+                            AccessToken = token ,
+                            RefreshToken = refreshToken
                         });
                     }
                     else
@@ -456,6 +465,38 @@ namespace ECommece_API.Areas.Identity.Controllers
             {
                 ReturnCode = 200,
                 ReturnMessage = "Logout Successful"
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Refresh(TokenApiRequest tokenApiRequest)
+        {
+            if (tokenApiRequest is null)
+            {
+                return BadRequest(new ReturnModelResponse
+                {
+                    ReturnCode = 400,
+                    ReturnMessage = "Invalid client request"
+                });
+            }
+            string accessToken = tokenApiRequest.AccessToken;
+            string refreshToken = tokenApiRequest.RefreshToken;
+            var principal = _jwtHandler.GetPrincipalFromExpiredToken(accessToken);
+            var username = principal.Identity.Name; //this is mapped to the Name claim by default
+            var user = await _userManager.FindByNameAsync(username);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+                return BadRequest(new ReturnModelResponse
+                {
+                    ReturnCode = 400,
+                    ReturnMessage = "Invalid client request"
+                });
+            var newAccessToken = await _jwtHandler.GenerateAccessTokenAsync(user);
+            var newRefreshToken = _jwtHandler.GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            await _userManager.UpdateAsync(user);
+            return Ok(new AuthenticatedResponse()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
             });
         }
     }

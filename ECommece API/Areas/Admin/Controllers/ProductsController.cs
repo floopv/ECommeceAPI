@@ -285,7 +285,7 @@ namespace ECommece_API.Areas.Admin.Controllers
             if (productId is not null && img is not null)
             {
                 //var productSubImg = _context.ProductSubImages.FirstOrDefault(psi=>psi.ProductId == productId && psi.Img == img);
-                var productSubImg = await _productSubImgRepo.GetOneAsync(expression: psi => psi.ProductId == productId && psi.Img == $"{img}{img.}");
+                var productSubImg = await _productSubImgRepo.GetOneAsync(expression: psi => psi.ProductId == productId && psi.Img == img);
                 if (productSubImg is null)
                 {
                     return NotFound(new ReturnModelResponse
