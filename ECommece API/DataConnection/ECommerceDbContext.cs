@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Models;
+﻿using ECommece_API.Models;
+using ECommerceAPI.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 //using ECommerceAPI.DTOs;
@@ -18,6 +19,8 @@ namespace ECommerceAPI.DataConnection
         public DbSet<ApplicationUserOTP> ApplicationUserOTPs { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         //override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    optionsBuilder.UseSqlServer("Data Source=FLOOPV\\SQLEXPRESS;initial catalog = ECommerce ;Integrated Security=True;" +
@@ -47,6 +50,12 @@ namespace ECommerceAPI.DataConnection
                 c.ApplicationUserId,
                 c.ProductId
             });
+            modelBuilder.Entity<OrderItem>().
+                HasKey(oi => new
+                {
+                    oi.ProductId,
+                    oi.OrderId
+                });
         }
     }
 }

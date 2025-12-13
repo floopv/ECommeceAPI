@@ -1,4 +1,5 @@
 ﻿using ECommece_API.JwtFeatures;
+using ECommece_API.Models;
 using ECommerceAPI.DataConnection;
 using ECommerceAPI.Models;
 using ECommerceAPI.Repos;
@@ -22,6 +23,8 @@ namespace ECommerceAPI
             Services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();  
             Services.AddScoped<IRepository<Cart> , Repository<Cart>>();  
             Services.AddScoped<IRepository<Promotion> , Repository<Promotion>>();  
+            Services.AddScoped<IRepository<Order> , Repository<Order>>();  
+            Services.AddScoped<IRepository<OrderItem> , Repository<OrderItem>>();  
             Services.AddScoped<IDbInitializer, DbInitializer>();  
             Services.AddScoped<IJwtHandler, JwtHandler>();  
 
